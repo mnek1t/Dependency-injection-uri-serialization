@@ -10,6 +10,7 @@ namespace UriConversion
     /// </summary>
     public class UriConverter : IConverter<Uri?>
     {
+        private IValidator<string> validator;
         /// <summary>
         /// Initializes a new instance of the <see cref="UriConverter"/> class.
         /// </summary>
@@ -18,7 +19,7 @@ namespace UriConversion
         /// <exception cref="ArgumentNullException">Throw if validator is null.</exception>
         public UriConverter(IValidator<string>? validator, ILogger<UriConverter>? logger = default)
         {
-            throw new NotImplementedException();
+            this.validator = validator;
         }
 
         /// <summary>
@@ -29,7 +30,11 @@ namespace UriConversion
         /// <exception cref="ArgumentNullException">Throw if source string is null.</exception>
         public Uri? Convert(string? obj)
         {
-            throw new NotImplementedException();
+            if (validator.IsValid(obj)) 
+            {
+                return new Uri(obj);
+            }
+            return null;
         }
     }
 }

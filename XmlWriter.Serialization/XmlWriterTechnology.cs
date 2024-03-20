@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Serialization;
+using System.IO;
 using Microsoft.Extensions.Logging;
 
 namespace XmlWriter.Serialization
@@ -11,6 +12,8 @@ namespace XmlWriter.Serialization
     /// </summary>
     public class XmlWriterTechnology : IDataSerializer<Uri>
     {
+        private readonly string PATH;
+        private ILogger<XmlWriterTechnology> Logger;
         /// <summary>
         /// Initializes a new instance of the <see cref="XmlWriterTechnology"/> class.
         /// </summary>
@@ -19,7 +22,8 @@ namespace XmlWriter.Serialization
         /// <exception cref="ArgumentException">Throw if text reader is null or empty.</exception>
         public XmlWriterTechnology(string? path, ILogger<XmlWriterTechnology>? logger = default)
         {
-            throw new NotImplementedException();
+            this.PATH = File.ReadAllText(path);
+            this.Logger = logger;
         }
 
         /// <summary>
@@ -29,7 +33,11 @@ namespace XmlWriter.Serialization
         /// <exception cref="ArgumentNullException">Throw if the source sequence is null.</exception>
         public void Serialize(IEnumerable<Uri>? source)
         {
-            throw new NotImplementedException();
+            System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
+            //using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create()) 
+            //{
+
+            //}
         }
     }
 }

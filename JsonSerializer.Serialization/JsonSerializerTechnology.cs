@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Serialization;
 
@@ -11,6 +12,7 @@ namespace JsonSerializer.Serialization
     /// </summary>
     public class JsonSerializerTechnology : IDataSerializer<Uri>
     {
+        private readonly string PATH;
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonSerializerTechnology"/> class.
         /// </summary>
@@ -19,7 +21,7 @@ namespace JsonSerializer.Serialization
         /// <exception cref="ArgumentException">Throw if text reader is null or empty.</exception>
         public JsonSerializerTechnology(string? path, ILogger<JsonSerializerTechnology>? logger = default)
         {
-            throw new NotImplementedException();
+            this.PATH = path;
         }
 
         /// <summary>
@@ -29,7 +31,36 @@ namespace JsonSerializer.Serialization
         /// <exception cref="ArgumentNullException">Throw if the source sequence is null.</exception>
         public void Serialize(IEnumerable<Uri>? source)
         {
-            throw new NotImplementedException();
+            if (source == null) 
+            {
+                throw new ArgumentNullException();
+            }
+
+            var uriInfos = new List<object>();
+            foreach (var uri in source)
+            {
+                var uriInfo = new
+                {
+                    Scheme = uri.Scheme,
+                    Host = uri.Host,
+                    Path = uri.AbsolutePath,
+                    Query = uri.Query.TrimStart('?')
+                };
+                uriInfos.Add(uriInfo);
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            using (FileStream stream = new FileStream(this.PATH, FileMode.OpenOrCreate, FileAccess.Write)) 
+            {
+                string jsonString = System.Text.Json.JsonSerializer.Serialize(uriInfos, options);
+                using (StreamWriter writer = new StreamWriter(stream)) 
+                {
+                    writer.Write(jsonString);
+                }
+            }
         }
     }
 }

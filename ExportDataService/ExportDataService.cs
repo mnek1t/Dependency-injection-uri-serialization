@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using DataReceiving;
 using Conversion;
 using Serialization;
+using System.Text.Json.Serialization;
+using JsonSerializer.Serialization;
 
 namespace ExportDataService
 {
@@ -12,6 +14,9 @@ namespace ExportDataService
     /// <typeparam name="T">The type data for export.</typeparam>
     public class ExportDataService<T>
     {
+        private IDataReceiver receiver;
+        private JsonSerializerTechnology serializer;
+        private IConverter<Uri> converter;
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportDataService{T}"/> class.
         /// </summary>
@@ -21,7 +26,9 @@ namespace ExportDataService
         /// <exception cref="ArgumentNullException">Trow if receiver, writer or converter is null.</exception>
         public ExportDataService(IDataReceiver receiver, IDataSerializer<T> serializer, IConverter<T> converter)
         {
-            throw new NotImplementedException();
+            this.receiver = receiver;
+            this.serializer = (JsonSerializerTechnology)serializer;
+            this.converter = (IConverter<Uri>)converter;
         }
 
         /// <summary>
@@ -31,7 +38,13 @@ namespace ExportDataService
         /// </summary>
         public void Run()
         {
-            throw new NotImplementedException();
+            IEnumerable<string> data =  receiver.Receive();
+            List<Uri> uris = new List<Uri>();
+            foreach (string dataItem in data) 
+            {
+                uris.Add(this.converter.Convert(dataItem));
+            }
+            serializer.Serialize(uris);
         }
     }
 }

@@ -23,6 +23,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\DataReceiving\DataReceiving.csproj" />
 		<ProjectReference Include="..\Conversion\Conversion.csproj" />
+		<ProjectReference Include="..\JsonSerializer.Serialization\JsonSerializer.Serialization.csproj" />
 		<ProjectReference Include="..\Serialization\Serialization.csproj" />
 	</ItemGroup>
 </Project>

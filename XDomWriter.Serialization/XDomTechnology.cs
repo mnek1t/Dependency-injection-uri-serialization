@@ -11,6 +11,9 @@ namespace XDomWriter.Serialization
     /// </summary>
     public class XDomTechnology : IDataSerializer<Uri>
     {
+        private readonly string PATH;
+        private ILogger<XDomTechnology> Logger;
+        //private const string OUTPUT_PATH = "D:\\EPAM\\Practical Assigments\\Dependecy Injection\\ConsoleClient\\bin\\Debug\\net6.0\\url-address.xml";
         /// <summary>
         /// Initializes a new instance of the <see cref="XDomTechnology"/> class.
         /// </summary>
@@ -19,7 +22,8 @@ namespace XDomWriter.Serialization
         /// <exception cref="ArgumentException">Throw if text reader is null or empty.</exception>
         public XDomTechnology(string? path, ILogger<XDomTechnology>? logger = default)
         {
-            throw new NotImplementedException();
+            this.PATH = File.ReadAllText(path);
+            this.Logger = logger;
         }
 
         /// <summary>
