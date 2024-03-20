@@ -34,11 +34,6 @@ namespace JsonSerializer.Serialization
                 throw new ArgumentNullException();
             }
 
-            if (string.IsNullOrEmpty(this.path))
-            {
-                throw new ArgumentException("Path cannot be null or empty", nameof(this.path));
-            }
-
             var uriInfos = new List<object>();
             foreach (var uri in source)
             {

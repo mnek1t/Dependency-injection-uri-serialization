@@ -44,13 +44,13 @@ namespace XDomWriter.Serialization
             using (XmlWriter writer = XmlWriter.Create(this.path, xmlSettings))
             {
                 writer.WriteStartDocument();
-                writer.WriteStartElement("uriAddresses");
+                writer.WriteStartElement("uriAdresses");
 
                 foreach (var uri in source)
                 {
                     if (uri != null)
                     {
-                        writer.WriteStartElement("uriAddress");
+                        writer.WriteStartElement("uriAdress");
                         writer.WriteStartElement("scheme");
                         writer.WriteAttributeString("name", uri.Scheme);
                         writer.WriteEndElement();
