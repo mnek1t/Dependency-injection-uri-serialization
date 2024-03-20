@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Xml;
 using Serialization;
 using Microsoft.Extensions.Logging;
-using System.Xml;
 
 namespace XDomWriter.Serialization
 {
@@ -12,9 +10,8 @@ namespace XDomWriter.Serialization
     /// </summary>
     public class XDomTechnology : IDataSerializer<Uri>
     {
-        private readonly string PATH;
-        private ILogger<XDomTechnology> logger;
-        //private const string OUTPUT_PATH = "D:\\EPAM\\Practical Assigments\\Dependecy Injection\\ConsoleClient\\bin\\Debug\\net6.0\\url-address.xml";
+        private readonly string? path;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="XDomTechnology"/> class.
         /// </summary>
@@ -23,8 +20,7 @@ namespace XDomWriter.Serialization
         /// <exception cref="ArgumentException">Throw if text reader is null or empty.</exception>
         public XDomTechnology(string? path, ILogger<XDomTechnology>? logger = default)
         {
-            this.PATH = path;
-            this.logger = logger;
+            this.path = path;
         }
 
         /// <summary>
@@ -38,21 +34,23 @@ namespace XDomWriter.Serialization
             {
                 throw new ArgumentNullException(nameof(source));
             }
-            if (string.IsNullOrEmpty(PATH))
+
+            if (string.IsNullOrEmpty(this.path))
             {
-                throw new ArgumentException(message: "Path cannot be null or empty", nameof(Path));
+                throw new ArgumentException(message: "Path cannot be null or empty", nameof(this.path));
             }
-            var xmlSettings = new XmlWriterSettings() { Indent = true , IndentChars = "    "};
-            using (XmlWriter writer = XmlWriter.Create(PATH, xmlSettings))
+
+            var xmlSettings = new XmlWriterSettings() { Indent = true , IndentChars = "    " };
+            using (XmlWriter writer = XmlWriter.Create(this.path, xmlSettings))
             {
                 writer.WriteStartDocument();
-                writer.WriteStartElement("uriAdresses");
+                writer.WriteStartElement("uriAddresses");
 
                 foreach (var uri in source)
                 {
                     if (uri != null)
                     {
-                        writer.WriteStartElement("uriAdress");
+                        writer.WriteStartElement("uriAddress");
                         writer.WriteStartElement("scheme");
                         writer.WriteAttributeString("name", uri.Scheme);
                         writer.WriteEndElement();
@@ -69,6 +67,7 @@ namespace XDomWriter.Serialization
                                 writer.WriteElementString("segment", segment);
                             }
                         }
+
                         writer.WriteEndElement();
                         if (!string.IsNullOrEmpty(uri.Query))
                         {
@@ -86,8 +85,10 @@ namespace XDomWriter.Serialization
                                     writer.WriteEndElement();
                                 }
                             }
+
                             writer.WriteEndElement();
                         }
+
                         writer.WriteEndElement();
                     }
                 }

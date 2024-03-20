@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Xml;
 using Serialization;
 using Microsoft.Extensions.Logging;
-using System.IO;
-using System.Xml;
 
 namespace XmlWriter.Serialization
 {
@@ -13,8 +10,7 @@ namespace XmlWriter.Serialization
     /// </summary>
     public class XmlWriterTechnology : IDataSerializer<Uri>
     {
-        private readonly string path;
-        private readonly ILogger<XmlWriterTechnology> logger;
+        private readonly string? path;
         /// <summary>
         /// Initializes a new instance of the <see cref="XmlWriterTechnology"/> class.
         /// </summary>
@@ -24,7 +20,6 @@ namespace XmlWriter.Serialization
         public XmlWriterTechnology(string? path, ILogger<XmlWriterTechnology>? logger = default)
         {
             this.path = path;
-            this.logger = logger;
         }
 
         /// <summary>
@@ -38,21 +33,23 @@ namespace XmlWriter.Serialization
             {
                 throw new ArgumentNullException(nameof(source));
             }
-            if (string.IsNullOrEmpty(path))
+
+            if (string.IsNullOrEmpty(this.path))
             {
-                throw new ArgumentException(message: "Path cannot be null or empty", nameof(Path));
+                throw new ArgumentException(message: "Path cannot be null or empty", nameof(this.path));
             }
+
             var xmlSettings = new XmlWriterSettings() { Indent = true, IndentChars = "    " };
-            using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(path, xmlSettings))
+            using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(this.path, xmlSettings))
             {
                 writer.WriteStartDocument();
-                writer.WriteStartElement("uriAdresses");
+                writer.WriteStartElement("uriAddresses");
 
                 foreach (var uri in source)
                 {
                     if (uri != null)
                     {
-                        writer.WriteStartElement("uriAdress");
+                        writer.WriteStartElement("uriAddress");
                         writer.WriteStartElement("scheme");
                         writer.WriteAttributeString("name", uri.Scheme);
                         writer.WriteEndElement();
@@ -69,6 +66,7 @@ namespace XmlWriter.Serialization
                                 writer.WriteElementString("segment", segment);
                             }
                         }
+
                         writer.WriteEndElement();
                         if (!string.IsNullOrEmpty(uri.Query))
                         {
@@ -86,8 +84,10 @@ namespace XmlWriter.Serialization
                                     writer.WriteEndElement();
                                 }
                             }
+
                             writer.WriteEndElement();
                         }
+
                         writer.WriteEndElement();
                     }
                 }

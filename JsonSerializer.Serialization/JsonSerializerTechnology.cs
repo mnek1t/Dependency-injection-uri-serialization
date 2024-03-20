@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Serialization;
 
@@ -12,7 +10,7 @@ namespace JsonSerializer.Serialization
     /// </summary>
     public class JsonSerializerTechnology : IDataSerializer<Uri>
     {
-        private readonly string PATH;
+        private readonly string? path;
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonSerializerTechnology"/> class.
         /// </summary>
@@ -21,7 +19,7 @@ namespace JsonSerializer.Serialization
         /// <exception cref="ArgumentException">Throw if text reader is null or empty.</exception>
         public JsonSerializerTechnology(string? path, ILogger<JsonSerializerTechnology>? logger = default)
         {
-            this.PATH = path;
+            this.path = path;
         }
 
         /// <summary>
@@ -35,19 +33,20 @@ namespace JsonSerializer.Serialization
             {
                 throw new ArgumentNullException();
             }
-            if (string.IsNullOrEmpty(this.PATH))
+
+            if (string.IsNullOrEmpty(this.path))
             {
-                throw new ArgumentException("Path cannot be null or empty", nameof(this.PATH));
+                throw new ArgumentException("Path cannot be null or empty", nameof(this.path));
             }
 
             var uriInfos = new List<object>();
             foreach (var uri in source)
             {
-                if (uri!= null) 
+                if (uri != null) 
                 {
-                    List<string> pathSegments = new List<string>(uri.AbsolutePath.Split('/'));
+                    var pathSegments = new List<string>(uri.AbsolutePath.Split('/'));
                     pathSegments.RemoveAll(string.IsNullOrWhiteSpace);
-                    List<object> query = new List<object>();
+                    var query = new List<object>();
                     if (!string.IsNullOrEmpty(uri.Query))
                     {
                         string queryKeyValues = uri.Query.TrimStart('?');
@@ -57,27 +56,29 @@ namespace JsonSerializer.Serialization
                             var keyValue = pair.Split('=');
                             if (pair.Split('=').Length == 2)
                             {
-                                var obj = new {key = keyValue[0], value = keyValue[1]};
+                                var obj = new { key = keyValue[0], value = keyValue[1] };
                                 query.Add(obj);
                             }
                         }
                     }
+
                     var uriInfo = new
                     {
                         scheme = uri.Scheme,
                         host = uri.Host,
                         path = pathSegments,
-                        query = query.Any() ? query : null
+                        query = query.Any() ? query : null,
                     };
                     uriInfos.Add(uriInfo);
                 }
             }
+
             var options = new JsonSerializerOptions
             {
                 WriteIndented = true,
-                IgnoreNullValues = true
+                IgnoreNullValues = true,
             };
-            using (FileStream stream = new FileStream(this.PATH, FileMode.OpenOrCreate, FileAccess.Write)) 
+            using (FileStream stream = new FileStream(this.path, FileMode.OpenOrCreate, FileAccess.Write)) 
             {
                 string jsonString = System.Text.Json.JsonSerializer.Serialize(uriInfos, options);
                 using (StreamWriter writer = new StreamWriter(stream)) 

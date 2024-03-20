@@ -9,16 +9,12 @@ namespace UriConversion
     /// </summary>
     public class UriValidator : IValidator<string>
     {
-        private Uri uri;
-        private readonly ILogger<UriValidator> logger;
         /// <summary>
         /// Initializes a new instance of the <see cref="UriValidator"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
         public UriValidator(ILogger<UriValidator>? logger = default)
         {
-            this.logger = logger;
-            //logger.BeginScope();
         }
 
         /// <summary>
@@ -29,10 +25,12 @@ namespace UriConversion
         /// <exception cref="ArgumentNullException">Throw if source string is null.</exception>
         public bool IsValid(string? obj)
         {
-            if (obj == null) 
+            if (obj == null)
             {
-                throw new ArgumentNullException(nameof(obj));   
+                throw new ArgumentNullException(nameof(obj));
             }
+
+            Uri uri;
             return Uri.TryCreate(obj, UriKind.Absolute, out uri);
         }
     }

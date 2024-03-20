@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using DataReceiving;
+﻿using DataReceiving;
 using Microsoft.Extensions.Logging;
 
 namespace TextFileReceiver
@@ -10,8 +8,8 @@ namespace TextFileReceiver
     /// </summary>
     public class TextStreamReceiver : IDataReceiver
     {
-        private readonly string PATH;
-        private ILogger<TextStreamReceiver> Logger;
+        private readonly string? path;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TextStreamReceiver"/> class.
         /// </summary>
@@ -20,8 +18,7 @@ namespace TextFileReceiver
         /// <exception cref="ArgumentException">Throw if text reader is null or empty.</exception>
         public TextStreamReceiver(string? path, ILogger<TextStreamReceiver>? logger = default)
         {
-            this.PATH = path;
-            this.Logger = logger;
+            this.path = path;
         }
 
         /// <summary>
@@ -30,8 +27,8 @@ namespace TextFileReceiver
         /// <returns>Strings.</returns>
         public IEnumerable<string> Receive()
         {
-            var strings= new List<string>();
-            using (FileStream stream = new FileStream(PATH, FileMode.Open, FileAccess.Read)) 
+            var strings = new List<string>();
+            using (FileStream stream = new FileStream(this.path, FileMode.Open, FileAccess.Read)) 
             {
                 using (StreamReader reader = new StreamReader(stream)) 
                 {
@@ -42,6 +39,7 @@ namespace TextFileReceiver
                     }
                 }
             }
+
             return strings;
         }
     }

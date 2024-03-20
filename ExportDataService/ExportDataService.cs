@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Text.Json.Serialization;
 using DataReceiving;
 using Conversion;
 using Serialization;
-using System.Text.Json.Serialization;
-using XDomWriter.Serialization;
 
 namespace ExportDataService
 {
@@ -14,16 +11,17 @@ namespace ExportDataService
     /// <typeparam name="T">The type data for export.</typeparam>
     public class ExportDataService<T>
     {
-        private IDataReceiver receiver;
-        private IDataSerializer<T> serializer;
-        private IConverter<T> converter;
+        private readonly IDataReceiver? receiver;
+        private readonly IDataSerializer<T>? serializer;
+        private readonly IConverter<T>? converter;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportDataService{T}"/> class.
         /// </summary>
         /// <param name="receiver">The data receiver.</param>
         /// <param name="serializer">The data serializer.</param>
         /// <param name="converter">The data convertor.</param>
-        /// <exception cref="ArgumentNullException">Trow if receiver, writer or converter is null.</exception>
+        /// <exception cref="ArgumentNullException">Throw if receiver, writer or converter is null.</exception>
         public ExportDataService(IDataReceiver receiver, IDataSerializer<T> serializer, IConverter<T> converter)
         {
             this.receiver = receiver;
@@ -38,12 +36,13 @@ namespace ExportDataService
         /// </summary>
         public void Run()
         {
-            IEnumerable<string> data =  receiver.Receive();
+            IEnumerable<string> data = receiver.Receive();
             var uris = new List<T>();
-            foreach (string dataItem in data) 
+            foreach (string dataItem in data)
             {
                 uris.Add(this.converter.Convert(dataItem));
             }
+
             serializer.Serialize(uris);
         }
     }
