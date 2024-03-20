@@ -14,6 +14,7 @@ namespace XmlDomWriter.Serialization
     public class XmlDomTechnology : IDataSerializer<Uri>
     {
         private readonly string PATH;
+        private ILogger<XmlDomTechnology> logger;
         /// <summary>
         /// Initializes a new instance of the <see cref="XmlDomTechnology"/> class.
         /// </summary>
@@ -23,6 +24,7 @@ namespace XmlDomWriter.Serialization
         public XmlDomTechnology(string? path, ILogger<XmlDomTechnology>? logger = default)
         {
             this.PATH = path;
+            this.logger = logger;
         }
 
         /// <summary>

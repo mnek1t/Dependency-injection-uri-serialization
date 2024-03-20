@@ -13,6 +13,7 @@ namespace XDomWriter.Serialization
     public class XDomTechnology : IDataSerializer<Uri>
     {
         private readonly string PATH;
+        private ILogger<XDomTechnology> logger;
         //private const string OUTPUT_PATH = "D:\\EPAM\\Practical Assigments\\Dependecy Injection\\ConsoleClient\\bin\\Debug\\net6.0\\url-address.xml";
         /// <summary>
         /// Initializes a new instance of the <see cref="XDomTechnology"/> class.
@@ -23,6 +24,7 @@ namespace XDomWriter.Serialization
         public XDomTechnology(string? path, ILogger<XDomTechnology>? logger = default)
         {
             this.PATH = path;
+            this.logger = logger;
         }
 
         /// <summary>

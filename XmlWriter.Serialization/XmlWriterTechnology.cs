@@ -22,7 +22,7 @@ namespace XmlWriter.Serialization
         /// <exception cref="ArgumentException">Throw if text reader is null or empty.</exception>
         public XmlWriterTechnology(string? path, ILogger<XmlWriterTechnology>? logger = default)
         {
-            this.PATH = File.ReadAllText(path);
+            this.PATH = path;
             this.Logger = logger;
         }
 

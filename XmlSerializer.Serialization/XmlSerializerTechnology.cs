@@ -14,6 +14,7 @@ namespace XmlSerializer.Serialization
     public class XmlSerializerTechnology : IDataSerializer<Uri>
     {
         private readonly string PATH;
+        private ILogger<XmlSerializerTechnology> logger;
         /// <summary>
         /// Initializes a new instance of the <see cref="XmlSerializerTechnology"/> class.
         /// </summary>
@@ -23,6 +24,7 @@ namespace XmlSerializer.Serialization
         public XmlSerializerTechnology(string? path, ILogger<XmlSerializerTechnology>? logger = default)
         {
             this.PATH = path;
+            this.logger = logger;
         }
 
         /// <summary>
