@@ -4,7 +4,7 @@ using DataReceiving;
 using Conversion;
 using Serialization;
 using System.Text.Json.Serialization;
-using JsonSerializer.Serialization;
+using XDomWriter.Serialization;
 
 namespace ExportDataService
 {
@@ -15,7 +15,7 @@ namespace ExportDataService
     public class ExportDataService<T>
     {
         private IDataReceiver receiver;
-        private JsonSerializerTechnology serializer;
+        private IDataSerializer<Uri> serializer;
         private IConverter<Uri> converter;
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportDataService{T}"/> class.
@@ -27,7 +27,7 @@ namespace ExportDataService
         public ExportDataService(IDataReceiver receiver, IDataSerializer<T> serializer, IConverter<T> converter)
         {
             this.receiver = receiver;
-            this.serializer = (JsonSerializerTechnology)serializer;
+            this.serializer = (IDataSerializer<Uri>)serializer;
             this.converter = (IConverter<Uri>)converter;
         }
 

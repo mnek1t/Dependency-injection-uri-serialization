@@ -10,12 +10,14 @@ namespace UriConversion
     public class UriValidator : IValidator<string>
     {
         private Uri uri;
+        private readonly ILogger<UriValidator> logger;
         /// <summary>
         /// Initializes a new instance of the <see cref="UriValidator"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
         public UriValidator(ILogger<UriValidator>? logger = default)
         {
+            this.logger = logger;
             //logger.BeginScope();
         }
 

@@ -30,6 +30,10 @@ namespace UriConversion
         /// <exception cref="ArgumentNullException">Throw if source string is null.</exception>
         public Uri? Convert(string? obj)
         {
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
             if (validator.IsValid(obj)) 
             {
                 return new Uri(obj);

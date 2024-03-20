@@ -35,23 +35,51 @@ namespace JsonSerializer.Serialization
             {
                 throw new ArgumentNullException();
             }
+            if (string.IsNullOrEmpty(this.PATH))
+            {
+                throw new ArgumentException("Path cannot be null or empty", nameof(this.PATH));
+            }
 
             var uriInfos = new List<object>();
             foreach (var uri in source)
             {
-                var uriInfo = new
+                if (uri!= null) 
                 {
-                    Scheme = uri.Scheme,
-                    Host = uri.Host,
-                    Path = uri.AbsolutePath,
-                    Query = uri.Query.TrimStart('?')
-                };
-                uriInfos.Add(uriInfo);
+                    List<string> pathSegments = new List<string>(uri.AbsolutePath.Split('/'));
+                    pathSegments.RemoveAll(string.IsNullOrWhiteSpace);
+                    List<object> query = new List<object>();
+                    if (!string.IsNullOrEmpty(uri.Query))
+                    {
+                        string queryKeyValues = uri.Query.TrimStart('?');
+                        string[] pairs = queryKeyValues.Split('&');
+                        foreach (string pair in pairs)
+                        {
+                            var keyValue = pair.Split('=');
+                            if (pair.Split('=').Length == 2)
+                            {
+                                var obj = new {key = keyValue[0], value = keyValue[1]};
+                                query.Add(obj);
+                            }
+                        }
+                    }
+                    var uriInfo = new
+                    {
+                        scheme = uri.Scheme,
+                        host = uri.Host,
+                        path = pathSegments,
+                        query = query.Any() ? query : null
+                    };
+                    //if (uriInfo.query != null)
+                    //{
+                    //    uriInfos.Add(uriInfo);
+                    //}
+                    uriInfos.Add(uriInfo);
+                }
             }
-
             var options = new JsonSerializerOptions
             {
-                WriteIndented = true
+                WriteIndented = true,
+                IgnoreNullValues = true
             };
             using (FileStream stream = new FileStream(this.PATH, FileMode.OpenOrCreate, FileAccess.Write)) 
             {

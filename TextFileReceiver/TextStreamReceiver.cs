@@ -20,7 +20,7 @@ namespace TextFileReceiver
         /// <exception cref="ArgumentException">Throw if text reader is null or empty.</exception>
         public TextStreamReceiver(string? path, ILogger<TextStreamReceiver>? logger = default)
         {
-            this.PATH = File.ReadAllText(path);
+            this.PATH = path;
             this.Logger = logger;
         }
 

@@ -16,6 +16,10 @@
         <AdditionalFiles Include="..\stylecop.json" Link="Properties\stylecop.json" />
     </ItemGroup>
     <ItemGroup>
+      <Content Include="bin\Debug\net6.0\url-address.json" />
+      <Content Include="bin\Debug\net6.0\url-address.xml" />
+    </ItemGroup>
+    <ItemGroup>
         <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
