@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Serialization;
-using System.IO;
 using Microsoft.Extensions.Logging;
+using System.IO;
+using System.Xml;
 
 namespace XmlWriter.Serialization
 {
@@ -12,8 +13,8 @@ namespace XmlWriter.Serialization
     /// </summary>
     public class XmlWriterTechnology : IDataSerializer<Uri>
     {
-        private readonly string PATH;
-        private ILogger<XmlWriterTechnology> Logger;
+        private readonly string path;
+        private readonly ILogger<XmlWriterTechnology> logger;
         /// <summary>
         /// Initializes a new instance of the <see cref="XmlWriterTechnology"/> class.
         /// </summary>
@@ -22,8 +23,8 @@ namespace XmlWriter.Serialization
         /// <exception cref="ArgumentException">Throw if text reader is null or empty.</exception>
         public XmlWriterTechnology(string? path, ILogger<XmlWriterTechnology>? logger = default)
         {
-            this.PATH = path;
-            this.Logger = logger;
+            this.path = path;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -33,11 +34,67 @@ namespace XmlWriter.Serialization
         /// <exception cref="ArgumentNullException">Throw if the source sequence is null.</exception>
         public void Serialize(IEnumerable<Uri>? source)
         {
-            System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
-            //using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create()) 
-            //{
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException(message: "Path cannot be null or empty", nameof(Path));
+            }
+            var xmlSettings = new XmlWriterSettings() { Indent = true, IndentChars = "    " };
+            using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(path, xmlSettings))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("uriAdresses");
 
-            //}
+                foreach (var uri in source)
+                {
+                    if (uri != null)
+                    {
+                        writer.WriteStartElement("uriAdress");
+                        writer.WriteStartElement("scheme");
+                        writer.WriteAttributeString("name", uri.Scheme);
+                        writer.WriteEndElement();
+                        writer.WriteStartElement("host");
+                        writer.WriteAttributeString("name", uri.Host);
+                        writer.WriteEndElement();
+
+                        string[] segments = uri.AbsolutePath.Split('/');
+                        writer.WriteStartElement("path");
+                        foreach (string segment in segments)
+                        {
+                            if (!string.IsNullOrEmpty(segment))
+                            {
+                                writer.WriteElementString("segment", segment);
+                            }
+                        }
+                        writer.WriteEndElement();
+                        if (!string.IsNullOrEmpty(uri.Query))
+                        {
+                            writer.WriteStartElement("query");
+                            string query = uri.Query.TrimStart('?');
+                            string[] pairs = query.Split('&');
+                            foreach (string pair in pairs)
+                            {
+                                string[] keyValue = pair.Split('=');
+                                if (keyValue.Length == 2)
+                                {
+                                    writer.WriteStartElement("parameter");
+                                    writer.WriteAttributeString("key", keyValue[0]);
+                                    writer.WriteAttributeString("value", keyValue[1]);
+                                    writer.WriteEndElement();
+                                }
+                            }
+                            writer.WriteEndElement();
+                        }
+                        writer.WriteEndElement();
+                    }
+                }
+
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+            }
         }
     }
 }

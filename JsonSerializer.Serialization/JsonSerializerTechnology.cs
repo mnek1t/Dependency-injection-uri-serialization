@@ -69,10 +69,6 @@ namespace JsonSerializer.Serialization
                         path = pathSegments,
                         query = query.Any() ? query : null
                     };
-                    //if (uriInfo.query != null)
-                    //{
-                    //    uriInfos.Add(uriInfo);
-                    //}
                     uriInfos.Add(uriInfo);
                 }
             }

@@ -15,8 +15,8 @@ namespace ExportDataService
     public class ExportDataService<T>
     {
         private IDataReceiver receiver;
-        private IDataSerializer<Uri> serializer;
-        private IConverter<Uri> converter;
+        private IDataSerializer<T> serializer;
+        private IConverter<T> converter;
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportDataService{T}"/> class.
         /// </summary>
@@ -27,8 +27,8 @@ namespace ExportDataService
         public ExportDataService(IDataReceiver receiver, IDataSerializer<T> serializer, IConverter<T> converter)
         {
             this.receiver = receiver;
-            this.serializer = (IDataSerializer<Uri>)serializer;
-            this.converter = (IConverter<Uri>)converter;
+            this.serializer = serializer;
+            this.converter = converter;
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace ExportDataService
         public void Run()
         {
             IEnumerable<string> data =  receiver.Receive();
-            List<Uri> uris = new List<Uri>();
+            var uris = new List<T>();
             foreach (string dataItem in data) 
             {
                 uris.Add(this.converter.Convert(dataItem));
